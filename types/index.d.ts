@@ -14,6 +14,6 @@ export type PackDog = { id: string; breed: 'teckel' | HelperBreed; mode: DogMode
 
 declare module 'claude-code' {
   interface PluginState {
-    'ondes-pastel': { pack: PackDog[]; sky: number }
+    'space-dog': { pack: PackDog[]; sky: number }
   }
 }

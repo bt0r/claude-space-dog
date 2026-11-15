@@ -71,7 +71,7 @@ You need the Claude desktop app, with Claude Code 2.1.323 or later. The terminal
 In a terminal session, at the Claude Code prompt:
 
 ```
-/plugin install ondes-pastel --marketplace bt0r/claude-space-dog
+/plugin install space-dog --marketplace bt0r/claude-space-dog
 ```
 
 Answer `y` to add the marketplace, then pick the "user" scope to get it in all your sessions.
@@ -79,7 +79,7 @@ Answer `y` to add the marketplace, then pick the "user" scope to get it in all y
 From a shell:
 
 ```bash
-claude plugin install ondes-pastel --marketplace bt0r/claude-space-dog
+claude plugin install space-dog --marketplace bt0r/claude-space-dog
 ```
 
 In the desktop app, where `/plugin` doesn't work: click **+** next to the prompt box, then **Plugins**, **Add marketplace** with `bt0r/claude-space-dog`, then **Add plugin**.

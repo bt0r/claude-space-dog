@@ -4,7 +4,7 @@ import { bandSvg, packSvg, positionAt } from './dog-svg'
 import { SHOOTING_HEAD, SKY_FRAMES, skyFrame } from './sky'
 
 const BAND = {
-  plugin: 'ondes-pastel',
+  plugin: 'space-dog',
   component: 'AbovePrompt',
   props: {
     hasSurvey: false,

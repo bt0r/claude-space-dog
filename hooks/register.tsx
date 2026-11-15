@@ -18,17 +18,17 @@ import { SKY_FPS, SKY_FRAMES, skyFrame } from './sky'
 const LOOK: ThemeSetArgs = {
   colors: theme,
   // Un verre léger : assez pour lire le texte, pas au point de cacher le fond animé.
-  backdrop: { scene: 'ondes', glass: { blur: 5, tint: '#12111f', opacity: 0.55 } },
+  backdrop: { scene: 'space-dog', glass: { blur: 5, tint: '#12111f', opacity: 0.55 } },
 }
 
 const MAIN = 'main'
 const MAIN_DOG: PackDog = { id: MAIN, breed: 'teckel', mode: 'walk', x: 0, dir: 1 }
 
 /** Le numéro de l'image du fond ; le fond se redessine à chaque changement. */
-const sky = atom({ plugin: 'ondes-pastel', key: 'sky' } as const, 0)
+const sky = atom({ plugin: 'space-dog', key: 'sky' } as const, 0)
 
 /** Les chiens du bandeau et d'où part l'animation de chacun ; le bandeau se redessine à chaque changement. */
-const pack = atom({ plugin: 'ondes-pastel', key: 'pack' } as const, [MAIN_DOG] as PackDog[])
+const pack = atom({ plugin: 'space-dog', key: 'pack' } as const, [MAIN_DOG] as PackDog[])
 
 const SLEEP_AFTER_MS = 5 * 60_000 // dort après 5 min sans rien faire
 const TYPING_PAUSE_MS = 4_000 // range la console 4 s après la dernière frappe
@@ -518,7 +518,7 @@ export const register: Register = on => {
   // En image (sans isInteractive) : un cadre serait rechargé à chaque image et clignoterait.
   on('ui.render', { component: 'Backdrop' }, async ($, e, next) => {
     // Ce hook entend le fond de tous les mods : on ne dessine que le nôtre.
-    const mine = e.props.plugin === $.plugin.name && e.props.scene === 'ondes'
+    const mine = e.props.plugin === $.plugin.name && e.props.scene === 'space-dog'
 
     if ((e.surface !== 'desktop' && e.surface !== 'mobile') || !mine) {
       return next(e)
