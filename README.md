@@ -1,57 +1,98 @@
 # claude-space-dog
 
-Un mod Claude Code pour l'app desktop : un thème sombre aux accents pastel, un ciel étoilé animé derrière la conversation, et un teckel en pixel art qui vit au-dessus de la zone de saisie.
+A Claude Code mod for the desktop app: a dark theme with pastel accents, an animated starry sky behind the conversation, and a pixel-art dachshund living right above the prompt box.
 
-## Ce que fait le mod
+![The dachshund playing ball under the Milky Way](docs/screenshots/ball.gif)
 
-**Le thème**
-- Couleurs sombres « nuit indigo », accents pastel (lavande, menthe, citron, bleu ciel, corail).
-- En fond, une nuit étoilée traversée par la Voie lactée, avec des étoiles qui scintillent et des étoiles filantes.
+## What the mod does
 
-**Le teckel**, dans un bandeau au-dessus de la saisie, réagit à ce qui se passe :
+**The theme**
+- Dark "indigo night" colors with pastel accents (lavender, mint, lemon, sky blue, coral).
+- In the background, a starry night crossed by the Milky Way, with twinkling stars and shooting stars.
 
-| Quand… | le teckel… |
+**The dachshund** lives in a band above the prompt box, with a floor, a plant and a dog basket, and reacts to what's going on. Every now and then it barks "Woof!".
+
+| When… | the dachshund… |
 |---|---|
-| rien ne se passe | se balade d'un bout à l'autre du bandeau |
-| tu tapes un message | regarde sa console |
-| ton message commence par « non » | fait pipi contre une borne à incendie |
-| Claude réfléchit | joue à la balle, lancée au hasard sur toute la largeur |
-| Claude a répondu | s'assoit et attend |
-| tu ne fais rien depuis un moment | mange dans sa gamelle |
-| tu ne fais rien depuis 5 minutes | va dormir dans son panier |
+| nothing is happening | strolls from one end of the band to the other |
+| you're typing a message | looks at its console |
+| your message starts with "no" | pees on a fire hydrant |
+| Claude is thinking | plays ball, thrown at random across the whole width |
+| Claude has answered | sits down and waits |
+| you've been idle for a while | eats from its bowl |
+| you've been idle for 5 minutes | goes to sleep in its basket |
 
-Il aboie « Waf ! » de temps en temps. Le bandeau a un plancher, une plante et le panier.
+### Nothing happening: a stroll
 
-**Un chien par agent.** Chaque agent lancé fait apparaître un chien dans une lueur, à un endroit au hasard : pit bull, berger allemand, jack russell ou shiba, chacun en trois robes, soit 12 chiens différents avant le premier doublon. Le chien suit l'état de son agent (balle quand il travaille, console pendant un outil long, assis quand il attend, couché quand il est inactif) et repart aspiré par un trou noir quand l'agent a fini.
+![The dachshund walking across the band](docs/screenshots/walk.gif)
+
+### You're typing: the console
+
+![The dachshund looking at its console while a message is typed](docs/screenshots/console.gif)
+
+### Your message starts with "no": the fire hydrant
+
+![The dachshund peeing on a fire hydrant after a message starting with "no"](docs/screenshots/pee.gif)
+
+### Claude is thinking: playing ball
+
+![The dachshund chasing a ball thrown across the band](docs/screenshots/ball.gif)
+
+### Claude has answered: sitting and waiting
+
+![The dachshund sitting and waiting](docs/screenshots/sit.gif)
+
+### Idle for a while: eating
+
+![The dachshund eating from its bowl](docs/screenshots/eat.gif)
+
+### Idle for 5 minutes: sleeping
+
+![The dachshund asleep in its basket](docs/screenshots/sleep.gif)
+
+## One dog per agent
+
+Every agent you launch brings in a dog, which appears in a glow at a random spot: a pit bull, a German shepherd, a Jack Russell or a shiba, each in three coats, so 12 different dogs before the first repeat. The dog follows its agent's state (ball while it works, console during a long tool call, sitting while it waits, lying down when idle).
+
+![The dachshund and three agent dogs: a pit bull, a German shepherd and a shiba](docs/screenshots/pack.gif)
+
+A new agent's dog appears in a glow:
+
+![An agent dog appearing in a glow](docs/screenshots/spawn.gif)
+
+When the agent is done, its dog gets sucked into a black hole:
+
+![An agent dog leaving through a black hole](docs/screenshots/leave.gif)
 
 ## Installation
 
-Il faut l'app desktop de Claude, avec Claude Code 2.1.323 ou plus récent. Le terminal n'affiche ni le fond, ni le bandeau, ni les couleurs.
+You need the Claude desktop app, with Claude Code 2.1.323 or later. The terminal shows neither the background, the band nor the colors.
 
-Dans une session de terminal, à l'invite de Claude Code :
+In a terminal session, at the Claude Code prompt:
 
 ```
 /plugin install ondes-pastel --marketplace bt0r/claude-space-dog
 ```
 
-Réponds `y` pour ajouter la marketplace, puis choisis la portée « user » pour l'avoir dans toutes tes sessions.
+Answer `y` to add the marketplace, then pick the "user" scope to get it in all your sessions.
 
-Depuis un shell :
+From a shell:
 
 ```bash
 claude plugin install ondes-pastel --marketplace bt0r/claude-space-dog
 ```
 
-Dans l'app desktop, où `/plugin` ne fonctionne pas : clique sur **+** à côté de la zone de saisie, puis **Plugins**, **Add marketplace** avec `bt0r/claude-space-dog`, puis **Add plugin**.
+In the desktop app, where `/plugin` doesn't work: click **+** next to the prompt box, then **Plugins**, **Add marketplace** with `bt0r/claude-space-dog`, then **Add plugin**.
 
-Une fois installé, les nouvelles sessions chargent le mod au démarrage. Dans une session déjà ouverte, tape `/reload-plugins`.
+Once installed, new sessions load the mod on startup. In a session that's already open, type `/reload-plugins`.
 
-## Développer
+## Development
 
-- `hooks/register.tsx` : le point d'entrée du mod (thème, humeurs du teckel, chiens des agents, horloge du fond).
-- `hooks/dog-svg.ts` : compose les animations du bandeau en SVG.
-- `hooks/sky.ts` : dessine le fond image par image.
-- `hooks/sprites.ts` : les sprites, générés par `gen_band.py` (`python3 gen_band.py hooks/sprites.ts`).
-- `hooks/dog.test.tsx` : les tests, lancés par `claude plugin test .`.
+- `hooks/register.tsx`: the mod's entry point (theme, the dachshund's moods, agent dogs, background clock).
+- `hooks/dog-svg.ts`: builds the band's animations as SVG.
+- `hooks/sky.ts`: draws the background frame by frame.
+- `hooks/sprites.ts`: the sprites, generated by `gen_band.py` (`python3 gen_band.py hooks/sprites.ts`).
+- `hooks/dog.test.tsx`: the tests, run with `claude plugin test .`.
+- `scripts/screenshots.mjs`: regenerates the GIFs in `docs/screenshots/` from the mod's own drawing code (`node scripts/screenshots.mjs`, needs Node 23.6+, Chromium and ImageMagick).
 
-Pour essayer une modification sans réinstaller : `claude --plugin-dir .`, ou `/reload-plugins` si le mod est installé depuis ce dossier.
+To try a change without reinstalling: `claude --plugin-dir .`, or `/reload-plugins` if the mod is installed from this folder.
