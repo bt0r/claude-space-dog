@@ -1,0 +1,5 @@
+{
+  "name": "claude-space-dog",
+  "owner": { "name": "bt0r" },
+  "plugins": [{ "name": "ondes-pastel", "source": "./" }]
+}
