@@ -109,8 +109,15 @@ test('pour dormir, il va jusqu’à son panier', async () => {
   expect(positionAt('sleep', { x: 100, dir: -1 }, width, 1)).toEqual({ x: 140, dir: 1 })
   // … et finit couché dedans, sans en bouger.
   expect(positionAt('sleep', { x: 100, dir: -1 }, width, 600).x).toBe(basketSpot)
-  // Le décor est là dans toutes les animations : plancher, plante, panier.
-  expect(bandSvg('walk', { x: 0, dir: 1 }, width)).toContain('fill="#2e2944"')
+  // Le décor est là dans toutes les animations : plancher, Monstera, panier.
+  const band = bandSvg('walk', { x: 0, dir: 1 }, width)
+  expect(band).toContain('fill="#2e2944"')
+  // Chaque feuille de la Monstera bouge à son propre rythme ; le plancher ne change pas d'un dessin à l'autre.
+  for (const cycle of ['18.8s', '22.4s', '16.2s']) {
+    expect(band).toContain(`dur="${cycle}"`)
+  }
+  const floor = (svg: string) => svg.slice(svg.indexOf('</defs>'), svg.indexOf('<use', svg.indexOf('</defs>')))
+  expect(floor(bandSvg('sit', { x: 200, dir: 1 }, width))).toBe(floor(band))
 })
 
 test('un chien par agent, chacun d’une race différente', async ($, on) => {
@@ -400,4 +407,61 @@ test('un redessin reprend les animations là où elles en sont', async () => {
   }
   // … et le dessin lui-même est le même : seuls les départs bougent.
   expect(later.replace(/ begin="[^"]*"/g, '')).toBe(fresh.replace(/ begin="[^"]*"/g, ''))
+})
+
+test('un clic sur le teckel : il se met sur le dos pour une caresse, puis repart', async ($, on) => {
+  const clock = mock.clock(on)
+  on('session.start', (_, e) => ({ cwd: e.cwd }))
+  await $.session.start({ cwd: '/', surface: 'desktop', isInteractive: true })
+
+  const ui = await $.ui.mount({ ...BAND, surface: 'desktop' })
+  const alt = async () => String((await ui.find({ type: 'Svg' }))?.props.alt)
+
+  // Un clic loin du chien (il part de la gauche du bandeau) ne fait rien…
+  await ui.pointer({ type: 'down', x: 70, y: 0, button: 'left' })
+  expect(await alt()).toMatch(/se balade/)
+  // … un clic sur lui le met sur le dos, cœurs compris.
+  await ui.pointer({ type: 'down', x: 3, y: 0, button: 'left' })
+  expect(await alt()).toMatch(/sur le dos/)
+  expect(String((await ui.find({ type: 'Svg' }))?.props.source)).toContain('#ff8fb3')
+  // La caresse finie, il reprend sa balade.
+  await clock.advance(6_000)
+  expect(await alt()).toMatch(/se balade/)
+  await ui.unmount()
+})
+
+test('la gamelle d’eau est posée près du panier', async () => {
+  const band = bandSvg('walk', { x: 0, dir: 1 }, 752)
+  expect(band).toContain('#5ec2ff')
+  expect(band).toContain('#7fa8e8')
+})
+
+test('un clic sur un chien d’agent : lui aussi se met sur le dos, puis reprend ce que fait son agent', async ($, on) => {
+  const clock = mock.clock(on)
+  on('agent.list', () => ({ value: [{ id: 'a1', status: 'running', description: 'test', type: 'general-purpose' }] }) as never)
+  on('session.start', (_, e) => ({ cwd: e.cwd }))
+  on('turn.start', () => ({ turnId: 't' }))
+  await $.session.start({ cwd: '/', surface: 'desktop', isInteractive: true })
+  await $.turn.start({ agentId: 'a1', turnId: 'a1' } as never)
+
+  const ui = await $.ui.mount({ ...BAND, surface: 'desktop' })
+  const alt = async () => String((await ui.find({ type: 'Svg' }))?.props.alt)
+  const helperOnBack = /(pit bull|berger allemand|jack russell|shiba) sur le dos/
+  expect(await alt()).not.toMatch(/sur le dos/)
+
+  // Le chien de l'agent apparaît au hasard : on clique de colonne en colonne, de droite à gauche,
+  // jusqu'à tomber dessus (s'il est caché derrière le teckel, le teckel a droit à sa caresse en passant).
+  for (let x = 85; x >= 0 && !helperOnBack.test(await alt()); x -= 1) {
+    await ui.pointer({ type: 'down', x, y: 0, button: 'left' })
+  }
+  expect(await alt()).toMatch(helperOnBack)
+
+  // Le relevé des agents ne l'interrompt pas…
+  await clock.advance(3_100)
+  expect(await alt()).toMatch(helperOnBack)
+  // … et la caresse finie, il retourne à sa balle.
+  await clock.advance(3_000)
+  expect(await alt()).not.toMatch(helperOnBack)
+  expect(String((await ui.find({ type: 'Svg' }))?.props.source)).toContain('stroke-width="1" x=')
+  await ui.unmount()
 })

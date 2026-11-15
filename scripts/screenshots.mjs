@@ -43,6 +43,7 @@ const STATES = [
   { name: 'sit', prompt: '', dogs: [teckel('sit', 180)], from: 0, seconds: 3 },
   { name: 'eat', prompt: '', dogs: [teckel('eat', 160)], from: 0, seconds: 3 },
   { name: 'sleep', prompt: '', dogs: [teckel('sleep', 300)], from: 4, seconds: 4 },
+  { name: 'pet', prompt: '', dogs: [teckel('pet', 160)], from: 0, seconds: 3 },
   {
     name: 'pack',
     prompt: '',
@@ -54,6 +55,18 @@ const STATES = [
     ],
     from: 0,
     seconds: 5,
+  },
+  {
+    name: 'pack-pet',
+    prompt: '',
+    dogs: [
+      teckel('sit', 30),
+      helper('a1', 'pitbull', 'pet', 150, 0),
+      helper('a2', 'berger', 'console', 240, 1),
+      helper('a3', 'shiba', 'pet', 320, 2),
+    ],
+    from: 0,
+    seconds: 4,
   },
   { name: 'spawn', prompt: '', dogs: [teckel('sit', 60), helper('a1', 'jack', 'ball', 260, 1, { spawn: true })], from: 0, seconds: 3 },
   { name: 'leave', prompt: '', dogs: [teckel('sit', 60), helper('a1', 'shiba', 'sit', 260, 0, { leaving: -0.8 })], from: 0, seconds: 3 },

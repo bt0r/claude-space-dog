@@ -19,6 +19,14 @@ export const COLORS: Readonly<Record<string, string>> = {
   "R": "#ff7a90",
   "r": "#ffb3c0",
   "Z": "#b8a6ff",
+  "N": "#3c9a6c",
+  "n": "#2b7652",
+  "i": "#93e2b8",
+  "u": "#4a8a5a",
+  "C": "#7fa8e8",
+  "W": "#5ec2ff",
+  "T": "#c8f0ff",
+  "K": "#ff8fb3",
   "l": "#4fae8a",
   "L": "#9ef0c9",
   "P": "#e8798f",
@@ -55,9 +63,9 @@ export const SPRITES = {
     "...okkkkkkkkkkkkkkkkkkkkkkto......",
     "...oskkkkkkkkkkkkkkkkkkkkdto......",
     "...ossssssssssssssssssssstto......",
-    "...odo..odo..........odo..odo.....",
-    "...ott..ott..........ott..ott.....",
-    "...ooo..ooo..........ooo..ooo....."
+    "...oddodo...........odooddo.......",
+    "...ottodo...........odootto.......",
+    "...oooooo...........ooooooo......."
   ],
   "walkB": [
     "........................oooo......",
@@ -72,9 +80,9 @@ export const SPRITES = {
     "...okkkkkkkkkkkkkkkkkkkkkkto......",
     "...oskkkkkkkkkkkkkkkkkkkkdto......",
     "...ossssssssssssssssssssstto......",
-    ".....odoodo..........odoodo.......",
-    ".....ottott..........ottott.......",
-    ".....oooooo..........oooooo......."
+    "....oddo.............ooddo........",
+    "....otto.............ootto........",
+    "....oooo.............ooooo........"
   ],
   "carryA": [
     "........................oooo......",
@@ -89,9 +97,9 @@ export const SPRITES = {
     "...okkkkkkkkkkkkkkkkkkkkkkto......",
     "...oskkkkkkkkkkkkkkkkkkkkdto......",
     "...ossssssssssssssssssssstto......",
-    "...odo..odo..........odo..odo.....",
-    "...ott..ott..........ott..ott.....",
-    "...ooo..ooo..........ooo..ooo....."
+    "...oddodo...........odooddo.......",
+    "...ottodo...........odootto.......",
+    "...oooooo...........ooooooo......."
   ],
   "carryB": [
     "........................oooo......",
@@ -106,9 +114,9 @@ export const SPRITES = {
     "...okkkkkkkkkkkkkkkkkkkkkkto......",
     "...oskkkkkkkkkkkkkkkkkkkkdto......",
     "...ossssssssssssssssssssstto......",
-    ".....odoodo..........odoodo.......",
-    ".....ottott..........ottott.......",
-    ".....oooooo..........oooooo......."
+    "....oddo.............ooddo........",
+    "....otto.............ootto........",
+    "....oooo.............ooooo........"
   ],
   "eatA": [
     "..................................",
@@ -123,9 +131,9 @@ export const SPRITES = {
     "...okkkkkkkkkkkkkkkkkkoeektttttto.",
     "...oskkkkkkkkkkkkkkkkkoeeokdttoo..",
     "...ossssssssssssssssssceeokoo.....",
-    "...odo..odo..........odo..odo.....",
-    "...ott..ott..........ott..ott.....",
-    "...ooo..ooo..........ooo..ooo....."
+    "...oddodo...........odooddo.......",
+    "...ottodo...........odootto.......",
+    "...oooooo...........ooooooo......."
   ],
   "eatB": [
     "..................................",
@@ -140,9 +148,9 @@ export const SPRITES = {
     "...okkkkkkkkkkkkkkkkkkoeeokdttoo..",
     "...oskkkkkkkkkkkkkkkkkceeokoo.....",
     "...ossssssssssssssssssssstto......",
-    "...odo..odo..........odo..odo.....",
-    "...ott..ott..........ott..ott.....",
-    "...ooo..ooo..........ooo..ooo....."
+    "...oddodo...........odooddo.......",
+    "...ottodo...........odootto.......",
+    "...oooooo...........ooooooo......."
   ],
   "console": [
     "..................................",
@@ -157,9 +165,9 @@ export const SPRITES = {
     "...okkkkkkkkkkkkkkkkkkceeokoo.....",
     "...oskkkkkkkkkkkkkkkkkkkkdto......",
     "...ossssssssssssssssssssstto......",
-    "...odo..odo..........odo..odo.....",
-    "...ott..ott..........ott..ott.....",
-    "...ooo..ooo..........ooo..ooo....."
+    "...oddodo...........odooddo.......",
+    "...ottodo...........odootto.......",
+    "...oooooo...........ooooooo......."
   ],
   "pee": [
     "........................oooo......",
@@ -174,9 +182,9 @@ export const SPRITES = {
     "oddokkkkkkkkkkkkkkkkkkkkkkto......",
     "oddoskkkkkkkkkkkkkkkkkkkkdto......",
     ".o.ossssssssssssssssssssstto......",
-    "........odo..........odo..odo.....",
-    "........ott..........ott..ott.....",
-    "........ooo..........ooo..ooo....."
+    "......odo...........odooddo.......",
+    "......odo...........odootto.......",
+    "......ooo...........ooooooo......."
   ],
   "sleepA": [
     "..................................",
@@ -266,6 +274,44 @@ export const SPRITES = {
     ".ossssssssssssoott......",
     "..oooooooooooooooo......"
   ],
+  "bellyA": [
+    ".........................ceeokoo.....",
+    "...oooooo...........ooooooeeokdttoo..",
+    "...ottodo...........odootoeektttttto.",
+    "...oddodo...........odoodoekkkkttttoo",
+    "...osssssssssssssssssssssttokwokkkko.",
+    "...oskkkkkkkkkkkkkkkkkkkkdtokkkkooo..",
+    "...okkkkkkkkkkkkkkkkkkkkkktohkko.....",
+    "..okohhhhhhhhhhhhhhhhhcgkkkoooo......"
+  ],
+  "bellyB": [
+    ".........................ceeokoo.....",
+    "....oooo.............oooooeeokdttoo..",
+    "....otto.............oottoeektttttto.",
+    "....oddo.............ooddoekkkkttttoo",
+    "...osssssssssssssssssssssttokwokkkko.",
+    "...oskkkkkkkkkkkkkkkkkkkkdtokkkkooo..",
+    "...okkkkkkkkkkkkkkkkkkkkkktohkko.....",
+    "..okohhhhhhhhhhhhhhhhhcgkkkoooo......"
+  ],
+  "heart": [
+    ".K.K.",
+    "KKKKK",
+    ".KKK.",
+    "..K.."
+  ],
+  "waterA": [
+    ".TWWWWWWW.",
+    "oCCCCCCCCo",
+    ".oCCCCCCo.",
+    "..oooooo.."
+  ],
+  "waterB": [
+    ".WWWWWTWW.",
+    "oCCCCCCCCo",
+    ".oCCCCCCo.",
+    "..oooooo.."
+  ],
   "consoleDevice": [
     "oooooooooooo",
     "oUUUUUUUUUUo",
@@ -303,21 +349,239 @@ export const SPRITES = {
     ".Z.",
     "ZZZ"
   ],
-  "plant": [
-    "....l..l.....",
-    "...lL.lLl....",
-    ".l.lLllL..l..",
-    ".lLlLLlLl.lL.",
-    "..lLLlLLLlL..",
-    ".l.lLLlLLl.l.",
-    ".lLllLLlLLLl.",
-    "..lLlLLLlLl..",
-    "...llLLLll...",
-    "..ppppppppp..",
-    "..oPPPPPPPo..",
-    "...oPPPPPo...",
-    "...oPPPPPo...",
-    "....ooooo...."
+  "monsteraPot": [
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........u.u.uu..........",
+    "...........uuu............",
+    "........ppppppppp.........",
+    "........oPPPPPPPo.........",
+    ".........oPPPPPo..........",
+    ".........oPPPPPo..........",
+    "..........ooooo..........."
+  ],
+  "monsteraLeaf0m1": [
+    "..........................",
+    "...oo.....................",
+    ".ooNNoo...................",
+    "oNNNiNNo..................",
+    "ooooNNNNo.................",
+    "oNNNNiNNo.................",
+    "ooooNNiNNo................",
+    "..onnnNiNo................",
+    "....onnnio................",
+    ".....ooooo................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    ".........................."
+  ],
+  "monsteraLeaf00": [
+    "..........................",
+    "..........................",
+    "...oooo...................",
+    ".ooNNNNo..................",
+    "oNNNiNNNo.................",
+    "ooooNiNNo.................",
+    "oNNNNNiNNo................",
+    "ooooNnNiNo................",
+    "..onnnnnio................",
+    "....oooooo................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    ".........................."
+  ],
+  "monsteraLeaf01": [
+    "..........................",
+    "..........................",
+    ".....oo...................",
+    "...ooNNo..................",
+    ".ooNNNNNo.................",
+    "oNNNiiNNo.................",
+    "ooooNNiNNo................",
+    "oNNNNnNiNo................",
+    "ooooNnnnio................",
+    "..onnooooo................",
+    "....o.....................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    ".........................."
+  ],
+  "monsteraLeaf02": [
+    "..........................",
+    "..........................",
+    "..........................",
+    "...ooooo..................",
+    "...NNNNNo.................",
+    ".ooNiNNNo.................",
+    "oNNoNiNNNo................",
+    "oooNNNiiNo................",
+    "oNNoNnNnio................",
+    "ooonnnnooo................",
+    "..o.ooo...................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    ".........................."
+  ],
+  "monsteraLeaf1m1": [
+    ".....................oo...",
+    "...................ooNNoo.",
+    "..................oNNiNNNo",
+    ".................oNNNNoooo",
+    ".................oNNiNNNNo",
+    "................oNNiNNoooo",
+    "................oNiNnnno..",
+    "................oinnno....",
+    "................ooooo.....",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    ".........................."
+  ],
+  "monsteraLeaf10": [
+    "..........................",
+    "...................oooo...",
+    "..................oNNNNoo.",
+    ".................oNNNiNNNo",
+    ".................oNNiNoooo",
+    "................oNNiNNNNNo",
+    "................oNiNnNoooo",
+    "................oinnnnno..",
+    "................oooooo....",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    ".........................."
+  ],
+  "monsteraLeaf11": [
+    "..........................",
+    "...................oo.....",
+    "..................oNNoo...",
+    ".................oNNNNNoo.",
+    ".................oNNiiNNNo",
+    "................oNNiNNoooo",
+    "................oNiNnNNNNo",
+    "................oinnnNoooo",
+    "................ooooonno..",
+    ".....................o....",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    ".........................."
+  ],
+  "monsteraLeaf12": [
+    "..........................",
+    "..........................",
+    "..................ooooo...",
+    ".................oNNNNN...",
+    ".................oNNNiNoo.",
+    "................oNNNiNoNNo",
+    "................oNiiNNNooo",
+    "................oinNnNoNNo",
+    "................ooonnnnooo",
+    "...................ooo.o..",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    ".........................."
+  ],
+  "monsteraLeaf2m1": [
+    "..........ooo.............",
+    ".........oNNNo............",
+    "........oNNiNNo...........",
+    ".......ooNNiNNoo..........",
+    "........oNNNiNNNo.........",
+    "........ooNNiNNoo.........",
+    ".........oNninNo..........",
+    "..........onino...........",
+    "...........ooo............",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    ".........................."
+  ],
+  "monsteraLeaf20": [
+    "...........ooo............",
+    "..........oNNNo...........",
+    ".........oNNiNNo..........",
+    "........ooNNiNNoo.........",
+    "........oNNNiNNNo.........",
+    "........ooNNiNNoo.........",
+    ".........oNninNo..........",
+    "..........onino...........",
+    "...........ooo............",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    ".........................."
+  ],
+  "monsteraLeaf21": [
+    "............ooo...........",
+    "...........oNNNo..........",
+    "..........oNNiNNo.........",
+    ".........ooNNiNNoo........",
+    "........oNNNiNNNo.........",
+    "........ooNNiNNoo.........",
+    ".........oNninNo..........",
+    "..........onino...........",
+    "...........ooo............",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    ".........................."
+  ],
+  "monsteraLeaf22": [
+    ".............ooo..........",
+    "............oNNNo.........",
+    "...........oNNiNNo........",
+    ".........ooNNiNNoo........",
+    ".........oNNNiNNNo........",
+    ".........ooNNiNNoo........",
+    ".........oNninNo..........",
+    "..........onino...........",
+    "...........ooo............",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    ".........................."
   ],
   "basket": [
     "..oooooooooooooooooooooooooooooooooooooo..",
@@ -503,6 +767,28 @@ export const SPRITES = {
     "..oAAAAAAAAEEEAo....",
     "..oaaaaaaaaaEEAo...."
   ],
+  "pitBellyA": [
+    "..oooooo..oooooo.........",
+    "..oEEoEo..oEoEEo.........",
+    "..oAAoao..oaoAAooAAEEEoo.",
+    "..oAAoaooooaoAAoAAAAEEEoo",
+    "..oAAAAAAAAEEEoAAAAAAEEEo",
+    "..oAAAAAABEBEBoAAAAwoAAEo",
+    "..oAAAAAAAAAAEoAaAAAAAAo.",
+    "..oAAAAAAAAAAEEoaAAAAAo..",
+    ".oAoooooooooAAEEoooooo..."
+  ],
+  "pitBellyB": [
+    "...oooo....oooo..........",
+    "...oEEo....oEEo..........",
+    "...oAAo....oAAoooAAEEEoo.",
+    "..ooAAooooooAAoAAAAAEEEoo",
+    "..oAAAAAAAAEEEoAAAAAAEEEo",
+    "..oAAAAAABEBEBoAAAAwoAAEo",
+    "..oAAAAAAAAAAEoAaAAAAAAo.",
+    "..oAAAAAAAAAAEEoaAAAAAo..",
+    ".oAoooooooooAAEEoooooo..."
+  ],
   "shibaA": [
     "...........o..o.....",
     "..........oHooHo....",
@@ -664,6 +950,28 @@ export const SPRITES = {
     "..oHHHHHHHHVVVVo....",
     "..oHHHHHHHHVVVVo....",
     "..oIIVVVVVVVVVVo...."
+  ],
+  "shibaBellyA": [
+    "..oooooo..oooooo.........",
+    "..oVVoVo..oVoVVo.........",
+    "..oHHoIo..oIoHHoVVVVVooo.",
+    "..oHHoIooooIoHHoHVVVVVVoo",
+    "..oHHHHHHHHVVVoHHHHHVVVVo",
+    "..oHHHHHHHHVVVoHHHHoHHVoo",
+    "..oHHHHHHHHVVVVoHHHHHoo..",
+    "..oHHHHHHHHVVVVoHooHo....",
+    ".oHHHooooooVVVVVo..o....."
+  ],
+  "shibaBellyB": [
+    "...oooo....oooo..........",
+    "...oVVo....oVVo..........",
+    "...oHHo....oHHooVVVVVooo.",
+    "..ooHHooooooHHoHHVVVVVVoo",
+    "..oHHHHHHHHVVVoHHHHHVVVVo",
+    "..oHHHHHHHHVVVoHHHHoHHVoo",
+    "..oHHHHHHHHVVVVoHHHHHoo..",
+    "..oHHHHHHHHVVVVoHooHo....",
+    ".oHHHooooooVVVVVo..o....."
   ],
   "shepA": [
     "..............o..o.....",
@@ -827,6 +1135,28 @@ export const SPRITES = {
     "oGo.oGGGGGGGGGGGGGo....",
     ".o..ojjjjjjjjjjGGGo...."
   ],
+  "shepBellyA": [
+    "....oooooo...oooooo.........",
+    "....ojjojo...ojojjo.........",
+    "....oGGojo...ojoGGoGGGGGooo.",
+    ".o..oGGojooooojoGGoGGGGJJJoo",
+    "oGo.oGGGGGGGGGGGGoGGGGGJJJJo",
+    "oGGoGJJJJJJJGGGGGoGGGGoGGooo",
+    ".oGJJJJJJJJJGGGGGGoGGGGGo...",
+    "..oJJJJJJJJJGGGGGGoGooGo....",
+    "...oooooooooooGGGGGo..o....."
+  ],
+  "shepBellyB": [
+    ".....oooo.....oooo..........",
+    ".....ojjo.....ojjo..........",
+    ".....oGGo.....oGGooGGGGGooo.",
+    ".o..ooGGoooooooGGoGGGGGJJJoo",
+    "oGo.oGGGGGGGGGGGGoGGGGGJJJJo",
+    "oGGoGJJJJJJJGGGGGoGGGGoGGooo",
+    ".oGJJJJJJJJJGGGGGGoGGGGGo...",
+    "..oJJJJJJJJJGGGGGGoGooGo....",
+    "...oooooooooooGGGGGo..o....."
+  ],
   "jackA": [
     "...........ooooo....",
     "..........oMMQQQo...",
@@ -988,5 +1318,27 @@ export const SPRITES = {
     "..oQQQMMQQQQQQQo....",
     "..oQQQMMQQQQQQQo....",
     "..oqqqqqqqqqQQQo...."
+  ],
+  "jackBellyA": [
+    "..oooooo..oooooo.........",
+    "..oQQoQo..oQoQQo.........",
+    "..oQQoqo..oqoQQooQQQQooo.",
+    "..oQQoqooooqoQQoMoQQQQBo.",
+    "..oQQQMMQQQQQQoMMMQQQQQoo",
+    "..oQQQMMQQQQQQoMMMQoQQQQo",
+    "..oQQQQQQQQQQQoMMMQQQQoo.",
+    "..oMQQQQQQQQQQQoMMQQQo...",
+    ".oQMooooooooQQQQooooo...."
+  ],
+  "jackBellyB": [
+    "...oooo....oooo..........",
+    "...oQQo....oQQo..........",
+    "...oQQo....oQQoooQQQQooo.",
+    "..ooQQooooooQQoMMoQQQQBo.",
+    "..oQQQMMQQQQQQoMMMQQQQQoo",
+    "..oQQQMMQQQQQQoMMMQoQQQQo",
+    "..oQQQQQQQQQQQoMMMQQQQoo.",
+    "..oMQQQQQQQQQQQoMMQQQo...",
+    ".oQMooooooooQQQQooooo...."
   ]
 } as const

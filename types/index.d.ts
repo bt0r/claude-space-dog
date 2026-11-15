@@ -1,5 +1,5 @@
 /** Ce que fait le teckel du bandeau. */
-export type DogMode = 'walk' | 'console' | 'pee' | 'eat' | 'sleep' | 'ball' | 'sit'
+export type DogMode = 'walk' | 'console' | 'pee' | 'eat' | 'sleep' | 'ball' | 'sit' | 'pet'
 
 /** Le sens dans lequel un chien regarde : 1 vers la droite, -1 vers la gauche. */
 export type DogDir = 1 | -1

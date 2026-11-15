@@ -26,7 +26,7 @@ const DOG_IN_BASKET = 8 // px, le chien couché dans le panier
 type Sprite = readonly string[]
 /** Une robe : des couleurs de remplacement pour certaines lettres du sprite. */
 type Tint = { id: string; colors: Readonly<Record<string, string>> }
-type Pose = 'walk' | 'stand' | 'run' | 'carry' | 'carryStand' | 'eat' | 'console' | 'pee' | 'sleep' | 'sit'
+type Pose = 'walk' | 'stand' | 'run' | 'carry' | 'carryStand' | 'eat' | 'console' | 'pee' | 'sleep' | 'sit' | 'pet'
 type Segment = { pose: Pose; dur: number; x0: number; x1: number; dir: DogDir }
 type Track = { segments: Segment[]; period: number }
 export type DogPosition = { x: number; dir: DogDir; seed?: number }
@@ -216,6 +216,8 @@ function poseContent(pose: Pose, dir: DogDir): string {
 
       return flip([draw(facing(S.sleepA, dir), 0, oy), draw(facing(S.sleepB, dir), 0, oy)], 3) + zs
     }
+    case 'pet':
+      return belly(dir)
     case 'sit': {
       // La tête assise s'aligne sur la tête debout.
       const ox = right ? DOG_W - spriteWidth(S.sitA) : 0
@@ -226,6 +228,36 @@ function poseContent(pose: Pose, dir: DogDir): string {
       return flip([a, b, a, b, a, b, blink, b], 3.2)
     }
   }
+}
+
+// La caresse : sur le dos, les pattes qui pédalent, le corps qui se dandine d'un côté à l'autre,
+// et des cœurs qui montent au-dessus de lui.
+const WIGGLE = 0.9 // s, un aller-retour du dandinement
+const HEART_RISE = 1.6 // s, la montée d'un cœur
+
+function belly(dir: DogDir): string {
+  return wiggle(draw(facing(SPRITES.bellyA, dir)), draw(facing(SPRITES.bellyB, dir)))
+}
+
+/** Le dandinement sur le dos et les cœurs, pour n'importe quel chien (ses deux images données). */
+function wiggle(a: string, b: string): string {
+  const S = SPRITES
+  const body =
+    `<g><animateTransform attributeName="transform" type="translate" values="-2 0;2 0;-2 0" dur="${WIGGLE}s" ` +
+    `repeatCount="indefinite" calcMode="discrete" keyTimes="0;.5;1"/>${flip([a, b], WIGGLE / 2)}</g>`
+  let hearts = ''
+
+  for (let i = 0; i < 3; i++) {
+    const x = 18 + i * 14
+    const begin = -(i * HEART_RISE) / 3
+    hearts +=
+      `<g opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.15;.7;1" dur="${HEART_RISE}s" ` +
+      `begin="${begin.toFixed(2)}s" repeatCount="indefinite"/>` +
+      `<animateTransform attributeName="transform" type="translate" values="${x} 10;${x} -2" dur="${HEART_RISE}s" ` +
+      `begin="${begin.toFixed(2)}s" repeatCount="indefinite"/>${draw(S.heart, 0, 0)}</g>`
+  }
+
+  return body + hearts
 }
 
 /** x du chien couché dans son panier (le panier est à droite du bandeau). */
@@ -342,6 +374,7 @@ const STILL_POSE: Record<Exclude<DogMode, 'walk' | 'ball'>, Pose> = {
   pee: 'pee',
   sleep: 'sleep',
   sit: 'sit',
+  pet: 'pet',
 }
 
 function trackFor(mode: DogMode, start: DogPosition, width: number): Track {
@@ -537,7 +570,35 @@ function sleepScene(start: DogPosition, width: number): string {
   return walking + `<g opacity="0"><set attributeName="opacity" to="1" begin="${d}s"/>${asleep}${front}</g>`
 }
 
-/** Le décor : plancher, plante à gauche, panier à droite (derrière le chien). */
+// La Monstera : le pot et les tiges ne bougent pas ; chaque feuille plie depuis son pétiole,
+// du repos à 2 px au bout, à son propre rythme : les feuilles ne bougent jamais ensemble.
+const LEAF_CYCLES = [18.8, 22.4, 16.2] // s, un aller-retour de chaque feuille, très lent
+
+function monstera(): string {
+  const S = SPRITES
+  const leaves = [
+    [S.monsteraLeaf00, S.monsteraLeaf01, S.monsteraLeaf02, S.monsteraLeaf01, S.monsteraLeaf00, S.monsteraLeaf0m1],
+    [S.monsteraLeaf10, S.monsteraLeaf11, S.monsteraLeaf12, S.monsteraLeaf11, S.monsteraLeaf10, S.monsteraLeaf1m1],
+    [S.monsteraLeaf20, S.monsteraLeaf2m1, S.monsteraLeaf20, S.monsteraLeaf21, S.monsteraLeaf22, S.monsteraLeaf21],
+  ]
+
+  return (
+    draw(S.monsteraPot, PLANT_X) +
+    leaves.map((poses, i) => flip(poses.map(p => draw(p, PLANT_X)), LEAF_CYCLES[i] ?? 4)).join('')
+  )
+}
+
+// La gamelle d'eau, à gauche du panier ; un reflet glisse doucement à sa surface.
+const WATER_GAP = 14 // px entre la gamelle et le panier
+const WATER_SHIMMER = 2.6 // s
+
+function waterBowl(width: number): string {
+  const x = Math.max(0, basketX(width) - WATER_GAP - spriteWidth(SPRITES.waterA))
+
+  return flip([draw(SPRITES.waterA, x), draw(SPRITES.waterB, x)], WATER_SHIMMER)
+}
+
+/** Le décor : plancher, Monstera à gauche, gamelle d'eau et panier à droite (derrière le chien). */
 function decor(width: number): string {
   let floor =
     `<rect x="0" y="${GROUND}" width="${width}" height="${BAND_HEIGHT - GROUND}" fill="#2e2944"/>` +
@@ -550,7 +611,7 @@ function decor(width: number): string {
     floor += `<rect x="${x + 23}" y="${GROUND + 3}" width="1" height="1" fill="#1f1b2e"/>`
   }
 
-  return floor + draw(SPRITES.plant, PLANT_X) + draw(SPRITES.basket, basketX(width))
+  return floor + monstera() + waterBowl(width) + draw(SPRITES.basket, basketX(width))
 }
 
 // --- Les chiens des agents : chacun sa race, sa couleur et son pas ---
@@ -565,6 +626,8 @@ type BreedLook = {
   sitA: Sprite
   sitB: Sprite
   sleep: Sprite
+  bellyA: Sprite // sur le dos, pour une caresse
+  bellyB: Sprite
   speed: number // px/s en balade
   run: number // px/s après la balle
   legs: number // s, cadence des pattes
@@ -576,19 +639,19 @@ const S = SPRITES
 const BREEDS: Record<HelperBreed, BreedLook> = {
   pitbull: {
     a: S.pitA, b: S.pitB, carryA: S.pitCarryA, carryB: S.pitCarryB, eatA: S.pitEatA, eatB: S.pitEatB,
-    sitA: S.pitSitA, sitB: S.pitSitB, sleep: S.pitSleep, speed: 34, run: 90, legs: 0.55,
+    sitA: S.pitSitA, sitB: S.pitSitB, sleep: S.pitSleep, bellyA: S.pitBellyA, bellyB: S.pitBellyB, speed: 34, run: 90, legs: 0.55,
   },
   berger: {
     a: S.shepA, b: S.shepB, carryA: S.shepCarryA, carryB: S.shepCarryB, eatA: S.shepEatA, eatB: S.shepEatB,
-    sitA: S.shepSitA, sitB: S.shepSitB, sleep: S.shepSleep, speed: 52, run: 125, legs: 0.5,
+    sitA: S.shepSitA, sitB: S.shepSitB, sleep: S.shepSleep, bellyA: S.shepBellyA, bellyB: S.shepBellyB, speed: 52, run: 125, legs: 0.5,
   },
   jack: {
     a: S.jackA, b: S.jackB, carryA: S.jackCarryA, carryB: S.jackCarryB, eatA: S.jackEatA, eatB: S.jackEatB,
-    sitA: S.jackSitA, sitB: S.jackSitB, sleep: S.jackSleep, speed: 62, run: 140, legs: 0.3,
+    sitA: S.jackSitA, sitB: S.jackSitB, sleep: S.jackSleep, bellyA: S.jackBellyA, bellyB: S.jackBellyB, speed: 62, run: 140, legs: 0.3,
   },
   shiba: {
     a: S.shibaA, b: S.shibaB, carryA: S.shibaCarryA, carryB: S.shibaCarryB, eatA: S.shibaEatA, eatB: S.shibaEatB,
-    sitA: S.shibaSitA, sitB: S.shibaSitB, sleep: S.shibaSleep, speed: 46, run: 115, legs: 0.42,
+    sitA: S.shibaSitA, sitB: S.shibaSitB, sleep: S.shibaSleep, bellyA: S.shibaBellyA, bellyB: S.shibaBellyB, speed: 46, run: 115, legs: 0.42,
   },
 }
 
@@ -650,6 +713,9 @@ function helperPose(look: BreedLook, tint: Tint | undefined, pose: Pose, dir: Do
       break
     case 'sleep':
       body = d(look.sleep)
+      break
+    case 'pet':
+      body = wiggle(d(look.bellyA), d(look.bellyB))
       break
     default:
       body = d(look.a)

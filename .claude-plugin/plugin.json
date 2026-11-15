@@ -1,6 +1,6 @@
 {
   "name": "space-dog",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Thème sombre pastel en pixel art : nuit indigo, et au-dessus de la saisie un teckel noir qui réagit à ce que tu fais, rejoint par un chien de race différente pour chaque agent.",
   "types": "./types/index.d.ts"
 }

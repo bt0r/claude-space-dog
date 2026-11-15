@@ -4,6 +4,7 @@ import type { AgentInfo, AgentStatus, EngineInterface, Register, ThemeSetArgs, T
 import type { DogMode, HelperBreed, PackDog } from '../types'
 import {
   BAND_HEIGHT,
+  DOG_W,
   COAT_COUNT,
   HELPER_BREEDS,
   LEAVE_SECONDS,
@@ -38,7 +39,8 @@ const HELPER_MAX_MS = 30 * 60_000 // un chien d'agent part de lui-même au bout 
 const POLL_MS = 3_000 // relit l'état des agents tant qu'il y a des chiens d'agents
 const LONG_TOOL_MS = 1_500 // un outil plus long que ça : le chien sort sa console
 // Animations ponctuelles ; les autres durent jusqu'au prochain événement.
-const DURATION_MS: Partial<Record<DogMode, number>> = { pee: 7_000, eat: 8_000 }
+const DURATION_MS: Partial<Record<DogMode, number>> = { pee: 7_000, eat: 8_000, pet: 5_000 }
+const PET_MARGIN = 10 // px : un clic tout près du teckel compte aussi
 
 // Largeur du bandeau en pixels : l'app ne lit pas une largeur en %. Elle donne au bandeau
 // ses colonnes moins les 5 de son bouton ; mesuré sur l'app : 85 colonnes ↔ 752 px.
@@ -57,6 +59,7 @@ const ALT: Record<DogMode, string> = {
   sleep: 'Le teckel dort dans son panier',
   ball: 'Le teckel joue avec sa balle pendant que Claude réfléchit',
   sit: 'Le teckel est assis et attend',
+  pet: 'Le teckel se roule sur le dos et se dandine pour une caresse',
 }
 
 const BREED_NAME: Record<HelperBreed, string> = {
@@ -80,6 +83,8 @@ let backToRest: Timer | undefined
 let eatTimer: Timer | undefined
 let sleepTimer: Timer | undefined
 let working = false // Claude est en train de répondre
+// Les chiens d'agents qu'on caresse : ce que leur agent leur demandera de faire après la caresse.
+const petted = new Map<string, { after: DogMode; timer?: Timer }>()
 
 function mainMode(): DogMode {
   return dogs.get(MAIN)?.dog.mode ?? 'walk'
@@ -224,6 +229,15 @@ async function addHelper($: EngineInterface, agentId: string): Promise<void> {
 
 /** Change l'animation d'un chien d'agent, en partant de là où il est. */
 async function setHelperMode($: EngineInterface, agentId: string, mode: DogMode): Promise<void> {
+  const pet = petted.get(agentId)
+
+  // Pendant une caresse, le chien reste sur le dos : il fera ce que veut son agent après.
+  if (pet !== undefined) {
+    pet.after = mode
+
+    return
+  }
+
   if (!alive(agentId) || dogs.get(agentId)?.dog.mode === mode) {
     return
   }
@@ -309,6 +323,12 @@ async function sync($: EngineInterface, endedId?: string): Promise<boolean> {
       touch()
       dogs.delete(agent.id)
       spawnDog($, agent.id, mode, now)
+    } else if (petted.has(agent.id)) {
+      const pet = petted.get(agent.id)
+
+      if (pet !== undefined) {
+        pet.after = mode
+      }
     } else if (dogs.get(agent.id)?.dog.mode !== mode) {
       touch()
       const current = dogs.get(agent.id)
@@ -397,7 +417,9 @@ async function typing($: EngineInterface, text: string): Promise<void> {
 
 function describe(list: readonly PackDog[]): string {
   const main = list.find(d => d.breed === 'teckel')
-  const others = list.flatMap(d => (d.breed === 'teckel' || d.leaving !== undefined ? [] : [BREED_NAME[d.breed]]))
+  const others = list.flatMap(d =>
+    d.breed === 'teckel' || d.leaving !== undefined ? [] : [`${BREED_NAME[d.breed]}${d.mode === 'pet' ? ' sur le dos' : ''}`],
+  )
   const base = ALT[main?.mode ?? 'walk']
 
   return others.length === 0 ? base : `${base}, avec ${others.join(', ')} (un chien par agent)`
@@ -546,10 +568,99 @@ export const register: Register = on => {
     await read($, sky)
     const elapsed = Math.max(0, ((await $.clock.now()) - basedAt) / 1000)
 
+    // Sur le bureau, une zone transparente par-dessus le dessin reçoit les clics (la caresse).
+    let petting = null
+
+    if (e.surface === 'desktop') {
+      const { Client } = $.ui.resolve(e)
+      petting = (
+        <Box position="absolute" top={0} left={0} width="100%" height="100%">
+          <Client key="petting" module="./petting.ts" width="100%" height="100%" />
+        </Box>
+      )
+    }
+
     return (
-      <Box width="100%">
+      <Box width="100%" position="relative">
         <Svg source={packSvg(list, width, elapsed)} alt={describe(list)} width={width} height={BAND_HEIGHT} />
+        {petting}
       </Box>
     )
   })
+
+  // Un clic sur le teckel : il se met sur le dos et se dandine, le temps d'une caresse.
+  on('ui.message', { element: 'petting' }, async ($, e, next) => {
+    const data = e.data as { x?: unknown } | null
+
+    if (typeof data?.x !== 'number') {
+      return next(e)
+    }
+    const id = await dogUnder($, data.x * PX_PER_COLUMN)
+
+    if (id === MAIN) {
+      armIdle($)
+      await setMode($, 'pet')
+    } else if (id !== undefined) {
+      await petHelper($, id)
+    }
+
+    return next(e)
+  })
+}
+
+/**
+ * Le chien sous le clic (en pixels du bandeau), là où il est en ce moment : d'abord les chiens
+ * d'agents, dessinés par-dessus le teckel, le dernier arrivé en premier ; un chien qui s'en va ne compte pas.
+ */
+async function dogUnder($: EngineInterface, px: number): Promise<string | undefined> {
+  const now = await $.clock.now()
+  const order = [...dogs.entries()].filter(([id]) => id !== MAIN).reverse()
+  const main = dogs.get(MAIN)
+
+  if (main !== undefined) {
+    order.push([MAIN, main])
+  }
+
+  for (const [id, { dog, at, leftAt }] of order) {
+    if (leftAt !== undefined) {
+      continue
+    }
+    const seconds = (now - at) / 1000
+    const here =
+      dog.breed === 'teckel'
+        ? { x: positionAt(dog.mode, dog, bandWidth, seconds).x, w: DOG_W }
+        : { x: helperPositionAt({ ...dog, breed: dog.breed }, bandWidth, seconds).x, w: helperWidth(dog.breed) }
+
+    if (px >= here.x - PET_MARGIN && px <= here.x + here.w + PET_MARGIN) {
+      return id
+    }
+  }
+
+  return undefined
+}
+
+/** La caresse d'un chien d'agent : sur le dos le temps d'une caresse, puis il reprend ce que fait son agent. */
+async function petHelper($: EngineInterface, agentId: string): Promise<void> {
+  const current = dogs.get(agentId)
+
+  if (current === undefined || !alive(agentId)) {
+    return
+  }
+  const previous = petted.get(agentId)
+  previous?.timer?.cancel()
+  // Ce que son agent lui fait faire, mis à jour pendant la caresse ; il le reprend à la fin.
+  const entry: { after: DogMode; timer?: Timer } = { after: previous?.after ?? current.dog.mode }
+  petted.set(agentId, entry)
+  entry.timer = $.clock.after(DURATION_MS.pet ?? 5_000, () => {
+    petted.delete(agentId)
+    void setHelperMode($, agentId, entry.after)
+  })
+  const now = await $.clock.now()
+  rebase(now)
+  const here = dogs.get(agentId)
+
+  if (here !== undefined) {
+    dogs.set(agentId, { dog: { ...here.dog, mode: 'pet' }, at: now })
+    await publish($)
+  }
 }
