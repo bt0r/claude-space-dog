@@ -899,8 +899,17 @@ function shiftTime(svg: string, elapsed: number): string {
     const begin = /\sbegin="(-?[\d.]+)s"/.exec(attrs)
     const base = begin === null ? 0 : Number(begin[1])
     const rest = begin === null ? attrs : attrs.replace(begin[0], '')
+    let shifted = base - elapsed
+    // Une animation jouée une seule fois et figée à la fin : si elle se termine avant l'instant 0,
+    // le navigateur l'ignore complètement (elle revient à son état de départ au lieu de rester
+    // figée). On la garde donc tout juste en train de finir.
+    const dur = /\sdur="([\d.]+)s"/.exec(attrs)
 
-    return `<${tag}${rest} begin="${(base - elapsed).toFixed(2)}s"${close}>`
+    if (dur !== null && /\sfill="freeze"/.test(attrs) && !/\srepeatCount=/.test(attrs)) {
+      shifted = Math.max(shifted, 0.01 - Number(dur[1]))
+    }
+
+    return `<${tag}${rest} begin="${shifted.toFixed(2)}s"${close}>`
   })
 }
 
